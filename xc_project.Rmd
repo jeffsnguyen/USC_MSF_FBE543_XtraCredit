@@ -1,0 +1,29 @@
+---
+title: "Extra Credit Project"
+author: "Marc Luiz, Nelly Shieh, Jeff Nguyen"
+date: "18/09/2020"
+output:
+  html_document:
+    code_folding: "hide"
+  pdf_document: default
+  word_document: default
+---
+```{r include = FALSE}
+#knitr::opts_chunk$set(echo=FALSE)
+```
+
+**Coitegration Analysis of Different Financial Markets**  
+**University of Southern California**  
+**Marshall School of Business**  
+**FBE 543 Forecasting and Risk Analysis**  
+**Spring 2021**  
+**Directed by Professor Mohammad Safarzadeh**   
+  
+# Topic:  
+Using major stock indices for the United States (S&P500), Unite Kingdom (FTSE100), Germany (DAX), and France (CAC40) show that US and European financial markets are cointegrated.  
+
+# Method:  
+
+
+# Data Analysis  
+tbc
