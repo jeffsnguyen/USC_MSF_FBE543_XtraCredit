@@ -8,8 +8,8 @@ output:
     code_folding: "hide"
   word_document: default
 ---
-```{r include = FALSE}
-#knitr::opts_chunk$set(echo=FALSE)
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning=FALSE, message=FALSE) 
 ```
 
 **Coitegration Analysis of Different Financial Markets**  
