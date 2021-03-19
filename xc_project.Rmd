@@ -72,6 +72,9 @@ adjGSPC_mo <- to.monthly(GSPC)$GSPC.Adjusted
 adjFTSE_mo <- to.monthly(FTSE)$FTSE.Adjusted
 adjGDAXI_mo <- to.monthly(GDAXI)$GDAXI.Adjusted
 adjFCHI_mo <- to.monthly(FCHI)$FCHI.Adjusted
+
+# Merge xts object
+globalIndices <- merge.xts(adjGSPC_mo)
 ```
   
 ## Data Observation:  
@@ -141,4 +144,30 @@ adf.test(adjFCHI_mo)
   
 We can observe $p-value > .05$. Thus, we fail to reject the null hypothesis. In other words, CAC 40 monthly adjusted closing price has a unit root and therefore, is a non-stationary variable.
   
+### Remarks  
+**Through (A)DF tests, we can observe that the indices adjusted monthly closing prices are non-stationary variables.**
+  
 ## Testing for stationarity for error term  
+
+Regression model  
+
+Shit's not working. FFS. Will need to run on residual instead of adjGSPC_mo
+```{r}
+model1 <- lm(adjGSPC_mo ~ adjFTSE_mo + adjGDAXI_mo + adjFCHI_mo, data=globalIndices)
+model1
+```
+### Checking for positive autocorrelation  
+
+We first run Durbin-Watson Test to check for positive autocorrelation.
+  
+```{r}
+library(car)
+
+durbinWatsonTest(model1)
+```
+  
+We can observe $p-value < .05$ from the DW Test, implying autocorrelation of the residuals in this model. We will attempt to remedy by adding $AR(1)$.
+
+### Fitting $ARIMA(1,0,0)$ or $AR(1)$  
+
+
