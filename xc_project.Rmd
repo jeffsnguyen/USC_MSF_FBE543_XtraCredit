@@ -51,9 +51,94 @@ Then, we run (A)DF test as above to test the error term for stationarity--not ha
 # Data Analysis  
 
 For this model, we use 20 years of data from March 2001 to March 2021.  
-
-Downloading data:  
+  
+## Downloading data  
 
 ```{r}
+library(quantmod)
+
+# Set start date and end date of data
+start_date <- "2001-01-01"
+end_date <- "2021-03-18"
+
+# Get data
+getSymbols("^GSPC", src = "yahoo", , from = start_date, to = end_date) # S&P 500
+getSymbols("^FTSE", src = "yahoo", , from = start_date, to = end_date) # S&P 500
+getSymbols("^GDAXI", src = "yahoo", , from = start_date, to = end_date) # S&P 500
+getSymbols("^FCHI", src = "yahoo", , from = start_date, to = end_date) # S&P 500
+
+# Adjusted Prices
+adjGSPC_mo <- to.monthly(GSPC)$GSPC.Adjusted
+adjFTSE_mo <- to.monthly(FTSE)$FTSE.Adjusted
+adjGDAXI_mo <- to.monthly(GDAXI)$GDAXI.Adjusted
+adjFCHI_mo <- to.monthly(FCHI)$FCHI.Adjusted
 ```
-tbc
+  
+## Data Observation:  
+
+Observing each indices:  
+```{r}
+plot(adjGSPC_mo, main="S&P500", col="Red")
+plot(adjFTSE_mo, main="FTSE100", col="Blue")
+plot(adjGDAXI_mo, main="DAX30", col="Chocolate")
+plot(adjFCHI_mo, main="CAC40", col="Purple")
+```
+  
+**Remarks**  
+**1. Seasonal Trend:**  
+All display similar seasonal trend with up and down spikes in price months after months.  
+**2. Cyclical Trend:**  
+All are affected by business cycle with similar peaks and troughs. The S&P 500 has less prominent troughs compared to those of other indices.  
+**3. Auto-correlation:**  
+All behave similar in this regard where both rises for some times when they rise and vice versa.  
+**4. Randomness:**  
+Their prices are unpredictable via inspection.  
+**5. Time:**  
+All follows similar time trend.  
+**6. Structural Break:**  
+We can see several structural breaks conincided with the 2001 Tech Bust and the 2007 Great Financial Crisis.  
+**7. Outliers:**  
+All have multiple outliers.  
+  
+In summary, we can observe clear trend and non-constant drift from all indices.  
+
+## Testing for Stationarity for indices
+  
+Per methodology, we run Augmented Dickey Fuller Test for each indices. Recall that the null hypothesis for Dickey-Fuller Test is that a unit root is present in our autoregressive model, meaning the variable is a non-stationary variable.  
+  
+### S&P 500  
+
+```{r}
+library(aTSA)
+
+adf.test(adjGSPC_mo)
+```
+  
+We can observe $p-value = .99 > .05$. Thus, we fail to reject the null hypothesis. In other words, S&P 500 monthly adjusted closing price has a unit root and therefore, is a non-stationary variable.
+  
+
+### FTSE 100  
+
+```{r}
+adf.test(adjFTSE_mo)
+```
+  
+We can observe $p-value > .05$. Thus, we fail to reject the null hypothesis. In other words, FTSE100 monthly adjusted closing price has a unit root and therefore, is a non-stationary variable.
+  
+### DAX 30  
+
+```{r}
+adf.test(adjGDAXI_mo)
+```
+  
+We can observe $p-value = .99 > .05$. Thus, we fail to reject the null hypothesis. In other words, DAX 30 monthly adjusted closing price has a unit root and therefore, is a non-stationary variable.
+  
+### CAC 40  
+
+```{r}
+adf.test(adjFCHI_mo)
+```
+  
+We can observe $p-value > .05$. Thus, we fail to reject the null hypothesis. In other words, CAC 40 monthly adjusted closing price has a unit root and therefore, is a non-stationary variable.
+  
+## Testing for stationarity for error term  
