@@ -81,30 +81,23 @@ globalIndices <- merge.xts(adjGSPC_mo)
 
 Observing each indices:  
 ```{r}
-plot(adjGSPC_mo, main="S&P500", col="Red")
-plot(adjFTSE_mo, main="FTSE100", col="Blue")
-plot(adjGDAXI_mo, main="DAX30", col="Chocolate")
-plot(adjFCHI_mo, main="CAC40", col="Purple")
+library(forecast)
+
+ggtsdisplay(adjGSPC_mo, main="S&P 500", plot.type="scatter")
+ggtsdisplay(adjFTSE_mo, main="FTSE 100", plot.type="scatter")
+ggtsdisplay(adjGDAXI_mo, main="DAX 30", plot.type="scatter")
+ggtsdisplay(adjFCHI_mo, main="CAC 40", plot.type="scatter")
 ```
   
 **Remarks**  
-**1. Seasonal Trend:**  
-All display similar seasonal trend with up and down spikes in price months after months.  
-**2. Cyclical Trend:**  
-All are affected by business cycle with similar peaks and troughs. The S&P 500 has less prominent troughs compared to those of other indices.  
-**3. Auto-correlation:**  
-All behave similar in this regard where both rises for some times when they rise and vice versa.  
-**4. Randomness:**  
-Their prices are unpredictable via inspection.  
-**5. Time:**  
-All follows similar time trend.  
-**6. Structural Break:**  
-We can see several structural breaks conincided with the 2001 Tech Bust and the 2007 Great Financial Crisis.  
-**7. Outliers:**  
-All have multiple outliers.  
-  
-In summary, we can observe clear trend and non-constant drift from all indices.  
+We can also see all indices' lag plots exhibit a linear pattern, implying that the data are strongly non-random and thus, a first-order autoregressive model might be appropriate.  
 
+\begin{equation}
+  \begin{aligned}
+    y_t =& \beta_0 + \beta_1 y_{t-1} + \epsilon_t
+  \end{aligned}
+\end{equation}
+  
 ## Testing for Stationarity for indices
   
 Per methodology, we run Augmented Dickey Fuller Test for each indices. Recall that the null hypothesis for Dickey-Fuller Test is that a unit root is present in our autoregressive model, meaning the variable is a non-stationary variable.  
@@ -151,7 +144,6 @@ We can observe $p-value > .05$. Thus, we fail to reject the null hypothesis. In 
 
 Regression model  
 
-Shit's not working. FFS. Will need to run on residual instead of adjGSPC_mo
 ```{r}
 # Converting xts to numeric because DW doesn't play nice with xts
 adjGSPC_mo_num <- as.numeric(adjGSPC_mo)
@@ -172,8 +164,42 @@ library(car)
 durbinWatsonTest(model1, max.lag=4)
 ```
   
-We can observe $p-value < .05$ from the DW Test, implying autocorrelation of the residuals in this model. We will attempt to remedy by adding $AR(1)$.
+We can observe $p-value < .05$ from the DW Test, implying autocorrelation of the residuals in this model. We will attempt to remedy by apply an ARIMA model.
 
-### Fitting $ARIMA(1,0,0)$ or $AR(1)$  
+### Fitting ARIMA Model  
 
+```{r}
+model2 <- auto.arima(adjGSPC_mo)
+summary(model2)
+```
+  
+We can see that with $ARIMA(2,2,2)$, we have great $ACF1$ statistics, implying a good fit for forecasting.  
+
+### Re-running Durbin Watson Test with ARIMA(2,2,2)  
+
+We rerun the Durbin Watson Test to verify if autocorrelation has been fixed. Since $durbinWatsonTest$ requires a linear model object, we calculate the statistics using the following equation:  
+
+\begin{equation}
+  \begin{aligned}
+    d =& \frac{\sum_{t=2}^T (\epsilon_t - \epsilon_{t-1})^2}{\sum_{t=1}^T \epsilon_t^2}  \\
+      =& `r ( sum((model2$residuals - lag(model2$residuals))^2, na.rm=TRUE))/( sum(model2$residuals^2, na.rm=TRUE))` \approx 2 \\
+  \end{aligned}
+\end{equation}
+
+Since the new Durbin-Watson Test is $d \approx 2$, we addressed the autocorrelation issue with our model.
+  
+### Test for stationarity of error term  
+
+We run the (A)DF test to check for stationarity of the error terms:  
+
+```{r}
+adf.test(model2$residuals)
+```
+  
+We can observe that $p-value = .01 < .05$, thus we reject the null hypothesis that the variable--the error term in this case--has a unit root. Thus the error term is non-stationary.
+
+# Conclusion  
+
+In conclusion, through our analysis, we note that all indices are stationary variables. However the error term is a stationary variable. This means that the global indices cointegrate.  
+  
 
