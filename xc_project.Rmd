@@ -20,7 +20,7 @@ output:
 **Directed by Professor Mohammad Safarzadeh**   
   
 # Topic:  
-Using major stock indices for the United States (S&P500), Unite Kingdom (FTSE100), Germany (DAX), and France (CAC40) show that US and European financial markets conintegrate.  
+Using major stock indices for the United States (S&P500), Unite Kingdom (FTSE100), Germany (DAX), and France (CAC40) show that US and European financial markets cointegrate.  
 
 # Method:  
 **Reviewing cointegration condition:**    
@@ -153,7 +153,13 @@ Regression model
 
 Shit's not working. FFS. Will need to run on residual instead of adjGSPC_mo
 ```{r}
-model1 <- lm(adjGSPC_mo ~ adjFTSE_mo + adjGDAXI_mo + adjFCHI_mo, data=globalIndices)
+# Converting xts to numeric because DW doesn't play nice with xts
+adjGSPC_mo_num <- as.numeric(adjGSPC_mo)
+adjFTSE_mo_num <- as.numeric(adjFTSE_mo)
+adjGDAXI_mo_num <- as.numeric(adjGDAXI_mo)
+adjFCHI_mo_num <- as.numeric(adjFCHI_mo)
+
+model1 <- lm(adjGSPC_mo_num ~ adjFTSE_mo_num + adjGDAXI_mo_num + adjFCHI_mo_num, data=globalIndices)
 model1
 ```
 ### Checking for positive autocorrelation  
@@ -163,7 +169,7 @@ We first run Durbin-Watson Test to check for positive autocorrelation.
 ```{r}
 library(car)
 
-durbinWatsonTest(model1)
+durbinWatsonTest(model1, max.lag=4)
 ```
   
 We can observe $p-value < .05$ from the DW Test, implying autocorrelation of the residuals in this model. We will attempt to remedy by adding $AR(1)$.
