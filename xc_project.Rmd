@@ -3,9 +3,9 @@ title: "Extra Credit Project"
 author: "Marc Luiz, Nelly Shieh, Jeff Nguyen"
 date: "18/09/2020"
 output:
+  pdf_document: default
   html_document:
     code_folding: "hide"
-  pdf_document: default
   word_document: default
 ---
 ```{r include = FALSE}
@@ -20,10 +20,40 @@ output:
 **Directed by Professor Mohammad Safarzadeh**   
   
 # Topic:  
-Using major stock indices for the United States (S&P500), Unite Kingdom (FTSE100), Germany (DAX), and France (CAC40) show that US and European financial markets are cointegrated.  
+Using major stock indices for the United States (S&P500), Unite Kingdom (FTSE100), Germany (DAX), and France (CAC40) show that US and European financial markets conintegrate.  
 
 # Method:  
+**Reviewing cointegration condition:**    
 
+Consider 2 time series variables $Y$ and $X$. We have the regression equation as follow:  
+
+\begin{equation}
+  \begin{aligned}
+    Y_t =& \beta_0 + \beta_1 X_t + \epsilon_t  \\
+  \end{aligned}
+\end{equation}
+  
+The cointegration is such that if $X$ and $Y$ are both non-stationary variables AND $\epsilon$ is a stationary variable, then $X$ and $Y$ cointegrate, i.e. they "move together" in the long run.  
+
+Thus, our primary methodology is as follow:  
+
+## 1. Test indices for stationarity:  
+Test representative stock indices in the United States (S&P 500), the United Kingdom (FTSE), Germany (DAX) and France (CAC40) for stationarity.  
+To execute this task, for each indices, we run the Augmented Dickey-Fuller Test (A)DF, which hypothesizes that a unit root is present in an autoregressive model. The intuition is such that if a variable is stationary, it tends to a constant mean--i.e. the values oscillates/ alternate for large to small. As a result, the process is not a random walk, i.e. nonstationary.
+
+## 2. Test error term for stationarity:  
+Should the regressed result confirm non-stationarity, check whether the error term of the regression $\epsilon$ are non-stationary variables. If they are, then the indices cointegrate.  
+  
+First we check for the common issue with time series data: positive autocorrelation by running Durbin-Watson Test. If autocorrelation exists, we add the first order autoregressive term $AR(1)$ into the model and subsequently $AR(2)$ as necessary.
+
+Then, we run (A)DF test as above to test the error term for stationarity--not having a unit root in the (A)DF test.  
 
 # Data Analysis  
+
+For this model, we use 20 years of data from March 2001 to March 2021.  
+
+Downloading data:  
+
+```{r}
+```
 tbc
