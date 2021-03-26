@@ -169,13 +169,13 @@ We can observe $p-value < .05$ from the DW Test, implying autocorrelation of the
 ### Fitting ARIMA Model  
 
 ```{r}
-model2 <- auto.arima(adjGSPC_mo)
+model2 <- auto.arima(adjGSPC_mo, xreg=cbind(adjFTSE_mo, adjGDAXI_mo, adjFCHI_mo))
 summary(model2)
 ```
   
-We can see that with $ARIMA(2,2,2)$, we have great $ACF1$ statistics, implying a good fit for forecasting.  
+We can see that with $ARIMA(0,1,1)$, we have great $ACF1$ statistics, implying a good fit for forecasting.  
 
-### Re-running Durbin Watson Test with ARIMA(2,2,2)  
+### Re-running Durbin Watson Test with ARIMA(0,1,1)  
 
 We rerun the Durbin Watson Test to verify if autocorrelation has been fixed. Since $durbinWatsonTest$ requires a linear model object, we calculate the statistics using the following equation:  
 
