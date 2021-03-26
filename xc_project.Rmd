@@ -39,10 +39,10 @@ Thus, our primary methodology is as follow:
 
 ## 1. Test indices for stationarity:  
 Test representative stock indices in the United States (S&P 500), the United Kingdom (FTSE), Germany (DAX) and France (CAC40) for stationarity.  
-To execute this task, for each indices, we run the Augmented Dickey-Fuller Test (A)DF, which hypothesizes that a unit root is present in an autoregressive model. The intuition is such that if a variable is stationary, it tends to a constant mean--i.e. the values oscillates/ alternate for large to small. As a result, the process is not a random walk, i.e. nonstationary.
+To execute this task, for each indices, we run the Augmented Dickey-Fuller Test (A)DF, which hypothesizes that a unit root is present in an autoregressive model. The intuition is such that if a variable is non-stationary, it tends to a constant mean--i.e. the values oscillates/ alternates from large to small. As a result, the process is not a random walk, i.e. non-stationary.
 
 ## 2. Test error term for stationarity:  
-Should the regressed result confirm non-stationarity, check whether the error term of the regression $\epsilon$ are non-stationary variables. If they are, then the indices cointegrate.  
+Should the regressed result confirm non-stationarity, we check whether the error term of the regression $\epsilon$ is a stationary variable. If they are, then the indices cointegrate.  
   
 First we check for the common issue with time series data: positive autocorrelation by running Durbin-Watson Test. If autocorrelation exists, we add the first order autoregressive term $AR(1)$ into the model and subsequently $AR(2)$ as necessary.
 
@@ -196,10 +196,10 @@ We run the (A)DF test to check for stationarity of the error terms:
 adf.test(model2$residuals)
 ```
   
-We can observe that $p-value = .01 < .05$, thus we reject the null hypothesis that the variable--the error term in this case--has a unit root. Thus the error term is non-stationary.
+We can observe that $p-value = .01 < .05$, thus we reject the null hypothesis that the variable--the error term in this case--has a unit root. Thus the error term is a stationary variable.
 
 # Conclusion  
 
-In conclusion, through our analysis, we note that all indices are stationary variables. However the error term is a stationary variable. This means that the global indices cointegrate.  
+In conclusion, through our analysis, we note that all indices are non-stationary variables. However the error term is a stationary variable. This means that the global indices cointegrate.  
   
 
